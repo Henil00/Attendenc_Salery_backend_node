@@ -22,9 +22,16 @@ app.get("/api/health", async (req, res) => {
       status: "OK",
       database: "Connected",
       timestamp: new Date().toISOString(),
+      // env: {
+      //   nodeEnv: process.env.NODE_ENV || "development",
+      //   databaseUrlSet: !!process.env.DATABASE_URL,
+      //   databaseUrlHost: process.env.DATABASE_URL
+      //     ? process.env.DATABASE_URL.split("@")[1]?.split("/")[0]
+      //     : "NOT SET",
+      // },
       env: {
-        nodeEnv: process.env.NODE_ENV || "development",
-        databaseUrlSet: !!process.env.DATABASE_URL,
+        nodeEnv: process.env.NODE_ENV ,
+        databaseUrlSet: process.env.DATABASE_URL,
         databaseUrlHost: process.env.DATABASE_URL
           ? process.env.DATABASE_URL.split("@")[1]?.split("/")[0]
           : "NOT SET",
