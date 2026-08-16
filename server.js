@@ -1,29 +1,35 @@
-require('dotenv').config();
-const app = require('./app');
-const { syncDatabase } = require('./models');
-const serverless = require('serverless-http');
+require("dotenv").config();
+const app = require("./app");
+const { syncDatabase } = require("./models");
 
-// Sync database (Vercel will run this cold start)
-let dbInitialized = false;
-const initDb = async () => {
-  if (!dbInitialized) {
-    await syncDatabase();
-    dbInitialized = true;
-  }
-};
+const PORT = process.env.PORT || 8080;
+
+// Health check endpoint (at root)
+app.get("/", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "Attendance API is running",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development",
+  });
+});
 
 // For local development
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 8080;
-  initDb().then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  });
+if (process.env.NODE_ENV !== "production") {
+  const start = async () => {
+    try {
+      await syncDatabase();
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+        console.log(`Health check: http://localhost:${PORT}/`);
+      });
+    } catch (err) {
+      console.error("Failed to start server:", err);
+      process.exit(1);
+    }
+  };
+  start();
 }
 
-// Export handler for Vercel
-module.exports = async (req, res) => {
-  await initDb();
-  return serverless(app)(req, res);
-};
+// Export for Vercel (serverless)
+module.exports = app;
