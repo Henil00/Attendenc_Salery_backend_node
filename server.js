@@ -30,7 +30,7 @@ app.get("/api/health", async (req, res) => {
       //     : "NOT SET",
       // },
       env: {
-        nodeEnv: process.env.NODE_ENV ,
+        nodeEnv: process.env.NODE_ENV,
         databaseUrlSet: process.env.DATABASE_URL,
         databaseUrlHost: process.env.DATABASE_URL
           ? process.env.DATABASE_URL.split("@")[1]?.split("/")[0]
@@ -43,9 +43,14 @@ app.get("/api/health", async (req, res) => {
       database: "Disconnected",
       error: err.message,
       timestamp: new Date().toISOString(),
+      // env: {
+      //   nodeEnv: process.env.NODE_ENV || "development",
+      //   databaseUrlSet: !!process.env.DATABASE_URL,
+      //   databaseUrlHost: process.env.DATABASE_URL ? "Set (hidden)" : "NOT SET",
+      // },
       env: {
-        nodeEnv: process.env.NODE_ENV || "development",
-        databaseUrlSet: !!process.env.DATABASE_URL,
+        nodeEnv: process.env.NODE_ENV,
+        databaseUrlSet: process.env.DATABASE_URL,
         databaseUrlHost: process.env.DATABASE_URL ? "Set (hidden)" : "NOT SET",
       },
     });
